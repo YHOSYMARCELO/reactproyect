@@ -18,7 +18,7 @@ export default function Lista() {
   const [paginationModel, setPaginationModel] = useState({
     datos: [],
     loading: false,
-    pageSize: 6,
+    pageSize: 5,
     page: 0,
     totalRows: 0
   }
@@ -37,7 +37,7 @@ export default function Lista() {
     setPaginationModel((previus) => ({ ...previus, loading: true }));
     fetch(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures?pageSize=${paginationModel.pageSize}&page=${paginationModel.page}`)
       .then(response => (response.json()))
-      .then(data => (setPaginationModel((previus) => ({ ...previus, datos: data, loading: false }))));
+      .then(data => (setPaginationModel((previus) => ({ ...previus, datos: data, loading: false, totalRows:paginationModel.datos.totalRows}))));
   }, [id]);
 
   const cambiarEstado = () => {
@@ -172,12 +172,10 @@ export default function Lista() {
           pageSize={paginationModel.pageSize}
           paginationMode="server"
           paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
           rowsPerPageOptions={[5, 10]}
+          rowCount={paginationModel.totalRows}
           onPageChange={(newPage) => setPaginationModel((previus) => ({ ...previus, page: newPage }))}
-
         />
-
       </div>
       <div style={{ visibility: estado === true ? "hidden" : "visible", marginTop: 20, display: "flex", justifyContent: "center", gap: 8 }}>
         <TextField variant="outlined" margin="normal" label="Id" onChange={(e) => setInputCode(e.target.value)} value={code} />
