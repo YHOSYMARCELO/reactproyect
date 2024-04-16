@@ -78,13 +78,13 @@ export default function DetailsMaterial({ valor, index }) {
           <Paper elevation={3} style={{ padding: 20 }}>
            
               <Box style={{ display: "flex", border: 1, flexDirection: "column" }}>
-                 <TextField variant="outlined" margin="normal" label="Id" onChange={handleInputChange} value={formData.id} disabled={!edit} />
-                <TextField variant="outlined" margin="normal" label="Name"onChange={handleInputChange}  value={formData.name} disabled={!edit}/>
-                <TextField variant="outlined" margin="normal" label="Code" onChange={handleInputChange} value={formData.code} disabled={!edit}/>
-                <TextField variant="outlined" margin="normal" label="ExternalCode" onChange={handleInputChange}  value={formData.externalCode} disabled={!edit} />
-                <TextField variant="outlined" margin="normal" label="Description" onChange={handleInputChange}  value={formData.description} disabled={!edit}/>
-                <TextField variant="outlined" margin="normal"  label="isVirtual" onChange={handleInputChange}  value={formData.isVirtual} disabled={!edit}/>
-                <TextField variant="outlined" margin="normal"label="Observations" onChange={handleInputChange}  value={formData.observations} disabled={!edit} />
+                 <TextField variant="outlined" margin="normal" placeholder='Id'  onChange={handleInputChange} value={formData.id} disabled={!edit} />
+                <TextField variant="outlined" margin="normal" placeholder="Name" onChange={handleInputChange}  value={formData.name} disabled={!edit}/>
+                <TextField variant="outlined" margin="normal"  placeholder="Code" onChange={handleInputChange} value={formData.code} disabled={!edit}/>
+                <TextField variant="outlined" margin="normal"  placeholder="ExternalCode" onChange={handleInputChange}  value={formData.externalCode} disabled={!edit} />
+                <TextField variant="outlined" margin="normal"  placeholder="Description" onChange={handleInputChange}  value={formData.description} disabled={!edit}/>
+                <TextField variant="outlined" margin="normal"   placeholder="isVirtual" onChange={handleInputChange}  value={formData.isVirtual} disabled={!edit}/>
+                <TextField variant="outlined" margin="normal" placeholder="Observations" onChange={handleInputChange}  value={formData.observations} disabled={!edit} />
                 <Button color="primary" variant="contained" onClick={handleClick}>{ edit ? "Guardar" : "Editar"}</Button>
               </Box>
           </Paper>

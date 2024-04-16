@@ -12,13 +12,13 @@ export default function Lista() {
   const [id, setId] = useState(1);
   const [estado, setEstado] = useState(true);
   const [name, setInputNombre] = useState("");
-  const [description, setInputDescription] = useState("");
+  const [code, setInputCode] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectRow, setSelectRow] = useState([]);
   const [paginationModel, setPaginationModel] = useState({
     datos: [],
     loading: false,
-    pageSize: 5,
+    pageSize: 6,
     page: 0,
     totalRows: 0
   }
@@ -66,22 +66,22 @@ export default function Lista() {
       alert("agregar los campos");
       return;
     }
-    else { 
-    const newData = {
-      versionLock: null,
-      active: true,
-      createdAt: null,
-      modifiedAt: null,
-      modifiedBy: null,
-      id: parseInt(selectRow.id),
-      clientId: 1,
-      name: name,
-      description:description
-    }
+    else {
+      const newData = {
+        versionLock: null,
+        active: true,
+        createdAt: null,
+        modifiedAt: null,
+        modifiedBy: null,
+        id: parseInt(selectRow.id),
+        clientId: 1,
+        name: name,
+        description: description
+      }
       try {
         await axios.put(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures/${selectRow.id}`, newData)
           //const updateData= paginationModel.datos.map((dato)=>(dato.id===selectRow.id ? [...dato, name , description]: dato))
-          .then(response => setPaginationModel((previus) => ({ ...previus, datos: response.data })));
+          .then(response => setPaginationModel((previus) => ({ ...previus, datos: previus.datos.map((dato) => dato.id === selectRow.id ? { ...dato, ...response.data } : dato) })));
         // setPaginationModel((previus)=>({...previus, datos:updateData}));
 
       } catch (error) {
@@ -109,17 +109,17 @@ export default function Lista() {
 
     axios.post(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures`, newData)
       .then(response => {
-        setPaginationModel((previus) => ({ ...previus, datos: [...previus.datos, response.data]}))
+        setPaginationModel((previus) => ({ ...previus, datos: [...previus.datos, response.data] }))
         alert("DATOS INGRESADOS CORRECTAMENTE")
       })
-      .catch(error=>console.log("ERROR", error))
-      .finally(()=>setSubmitting(false));
+      .catch(error => console.log("ERROR", error))
+      .finally(() => setSubmitting(false));
     //setPaginationModel((previus)=>({...previus , datos: [id, name, description]}));
   }
   const buscarDatos = () => {
-    const valorFiltrado = paginationModel.datos.filter((dat) => 
-    (dat.name.toLowerCase().includes(name.toLowerCase()) && 
-    dat.description.toLowerCase().includes(description.toLowerCase())));
+    const valorFiltrado = paginationModel.datos.filter((dat) =>
+    (dat.id === parseInt(code) &&
+      dat.name.toLowerCase().includes(name.toLowerCase())));
     setPaginationModel((previus) => ({ ...previus, datos: valorFiltrado }));
   }
   const columns = [
@@ -165,6 +165,7 @@ export default function Lista() {
 
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
+          autoHeight
           rows={rows}
           loading={paginationModel.loading}
           columns={columns}
@@ -178,29 +179,23 @@ export default function Lista() {
         />
 
       </div>
-      <div style={{ visibility: estado === true ? "hidden" : "visible", margin: 4 }}>
-        <FormControl>
-          <InputLabel htmlFor="my-input">Name</InputLabel>
-          <Input value={name} onChange={(e) => setInputNombre(e.target.value)} id="my-input" aria-describedby="my-helper-text" />
-        </FormControl>
-        <FormControl>
-          <InputLabel htmlFor="my-input">Description</InputLabel>
-          <Input value={description} onChange={(e) => setInputDescription(e.target.value)} id="my-input" aria-describedby="my-helper-text" />
-        </FormControl>
+      <div style={{ visibility: estado === true ? "hidden" : "visible", marginTop: 20, display: "flex", justifyContent: "center", gap: 8 }}>
+        <TextField variant="outlined" margin="normal" label="Id" onChange={(e) => setInputCode(e.target.value)} value={code} />
+        <TextField variant="outlined" margin="normal" label="Name" onChange={(e) => setInputNombre(e.target.value)} value={name} />
       </div>
-    <Box style={{display:"grid", flexDirection:"row"}}>
-      <Button variant="outlined" onClick={cambiarEstado} color="primary" disableElevation>
-        Desaparecer
-      </Button>
-      <Button variant="outlined" onClick={buscarDatos} color="primary" disableElevation>
-        Filtrar
-      </Button>
-      <Button variant="outlined" onClick={() => (setId(id + 1))} color="primary" disableElevation>
-        Aumentar
-      </Button>
-      <Button variant="outlined" onClick={() => (setId(id - 1))} color="primary" disableElevation>
-        Disminuir
-      </Button>
+      <Box style={{ display: "grid", flexDirection: "row", gap: 10 }}>
+        <Button variant="outlined" onClick={cambiarEstado} color="primary" disableElevation>
+          Desaparecer
+        </Button>
+        <Button variant="outlined" onClick={buscarDatos} color="primary" disableElevation>
+          Filtrar
+        </Button>
+        <Button variant="outlined" onClick={() => (setId(id + 1))} color="primary" disableElevation>
+          Aumentar
+        </Button>
+        <Button variant="outlined" onClick={() => (setId(id - 1))} color="primary" disableElevation>
+          Disminuir
+        </Button>
       </Box>
       <Formik
         initialValues={{
@@ -216,7 +211,7 @@ export default function Lista() {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box boxShadow={3} style={{ display: "flex", padding: 3, gap: 8, flexDirection: "column" , alignItems: "center" }}>
+            <Box boxShadow={3} style={{ display: "flex", padding: 3, gap: 8, flexDirection: "column", alignItems: "center" }}>
               <Field
                 as={TextField}
                 label="Name"
