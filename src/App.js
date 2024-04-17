@@ -9,6 +9,7 @@ import Stab from './components/Stab';
 import Tags from './components/Tags';
 import Cart from './components/Cart';
 import ShopPage from './components/ShopPage';
+import Procedimientos from './components/Procedimientos';
 
 function App() {
   return (
@@ -20,10 +21,11 @@ function App() {
           <Route path="tags/:id" element={<Tags/>}/>
           <Route path="*" element={<Lista />} />
        
-  </Routes>*/}
+  </Routes>
   <ShopPage>
     <Cart></Cart>
-  </ShopPage>
+  </ShopPage>*/}
+  <Procedimientos></Procedimientos>
    </>
   );
 }
