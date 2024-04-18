@@ -7,10 +7,10 @@ import clsx from 'clsx';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, Typography , TextField} from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { createContext } from 'react';
+import { CartContext } from './CartProvider'
 
 const useStyles = makeStyles((theme) => ({
     expand: {
@@ -42,13 +42,12 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-const ProductContext= createContext(null);
 
 export default function ModalProduct({producto, open, onClose }) {
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
     const [quantity, setQuantity]= useState(1); 
-    const [addProduct, setAddProduct] = useState({producto:[], quantity:1})
+    const {addProduct} = useContext(CartContext)
 
     useEffect(()=>{
         setAddProduct({producto:producto, quantity:quantity})
@@ -96,8 +95,8 @@ export default function ModalProduct({producto, open, onClose }) {
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
-    const handleAddProduct=(producto,quantity)=>{
-        setAddProduct({producto, quantity})
+    const handleAddProduct=()=>{
+        addProduct(producto, quantity);
     }
     return (
         <Modal
