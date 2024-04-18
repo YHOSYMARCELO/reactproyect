@@ -8,6 +8,8 @@ import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
+import "../css/ShopPage.css"
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,15 +37,15 @@ export default function ShowPage({children}) {
           <Typography variant="h6" className={classes.title}>
             ShopFood
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" startIcon={<AddIcon/>}>Cart</Button>
         </Toolbar>
       </AppBar>
     </div>
-    <Container maxWidth="sm">
-        <Box  style={{display:"flex", gap:30}}>
+    <div className='container'>
+        <Box className='box'>
         {children}
         </Box>
-    </Container>
+    </div>
     </>
   );
 }

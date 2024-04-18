@@ -2,58 +2,75 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import {useState } from "react";
+import TextField from '@material-ui/core/TextField';
+import Box from '@material-ui/core/Box';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
-export default function SimpleDialog(props){
- 
-  const { onClose, open , onUpdate} = props;
-  const [name,setName]=useState("");
-  const [description, setDescription]=useState("");
-
+const SignupSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Se requiere el nombre'),
+  description: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('La descripción es obligatoria'),
+});
+export default function SimpleDialog(props) {
+  const { onClose, open, onUpdate } = props;
   const handleClose = () => {
     onClose();
   };
 
-   /* useEffect(()=>{
-
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(valorNuevo)
-    };
-
-      fetch(`http://192.168.0.30:8080/snc-mf-api/v1/clients/1/procedures`, requestOptions)
-      .then(response=> response.json())
-      .catch(error=>console.log(error))
-
-    },[valorNuevo]);*/
-
-  const handleClick=()=>{
-      onUpdate(name,description);
-      onClose();
+  const handleClickUpdate = (values) => {
+    onUpdate(values);
   }
-  
-  /*const handleListItemClick = (value) => {
-    onClose(value);
-  };*/
-    return(
-  
-        <Dialog onClose={handleClose}  aria-labelledby="simple-dialog-title" open={open}>
-        <DialogTitle id="simple-dialog-title">Formulario</DialogTitle>
-        <FormControl onSubmit={(e)=>(e.preventDefault)} style={{width:400 , height:400 , margin:20}}>
-        <InputLabel htmlFor="input-with-icon-adornment">With a start adornment</InputLabel>
-        <Input value={name} onChange={(e)=>setName((e.target.value))} 
-        />
-      <InputLabel htmlFor="input-with-icon-adornment">With a start adornment</InputLabel>
-        <Input value={description} onChange={(e)=>setDescription((e.target.value))}
-        
-        />
-        <Button style={{marginTop:10}} onClick={handleClick} variant='contained'>Actualizar</Button>
-      </FormControl>
-      </Dialog>
-      
-    );
+  return (
+
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <DialogTitle id="simple-dialog-title">Formulario</DialogTitle>
+      <Formik
+        initialValues={{
+          name: "",
+          description: "",
+        }}
+        validationSchema={SignupSchema}
+        onSubmit={(values) => {
+
+          handleClickUpdate(values);
+
+        }}
+      >
+          <Form style={{ height: 400, width: 400 }}>
+            <Box boxShadow={3} style={{ display: "flex", padding: 3, gap: 8, flexDirection: "column", alignItems: "center" }}>
+              <Field
+                as={TextField}
+                label="Name"
+                name="name"
+                variant="outlined"
+                margin="normal"
+                helperText={<ErrorMessage name="name" />}
+              />
+              <Field
+                as={TextField}
+                label="Description"
+                name="description"
+                variant="outlined"
+                margin="normal"
+                helperText={<ErrorMessage name="description" />}
+              />
+
+              <Box display="flex" justifyContent="center" width="100%" marginTop={2}>
+                <Button onClick={handleClickUpdate} type="submit" variant="contained" color="secondary" style={{ marginTop: 20, marginRight: 10 }}>
+                  Update
+                </Button>
+              </Box>
+            </Box>
+          </Form> 
+      </Formik>
+    </Dialog>
+
+  );
+
 }

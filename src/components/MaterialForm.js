@@ -273,18 +273,18 @@ export default function MaterialForm() {
         </AppBar>
       </div>
       <DataGrid
-        autoHeight
-        rows={rows}
-        columns={columns}
-        pageSize={pagination.pageSize}
-        //paginationModel={paginationModel}
-        //onPaginationModelChange={setPaginationModel}
-        rowsPerPageOptions={[5, 10]}
-        checkboxSelection
-        onRowClick={handleClick}
-        loading={pagination.loading}
-        rowCount={pagination.totalRows}
-        onPageChange={(newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
+         autoHeight
+         rows={rows}
+         columns={columns}
+         pageSize={pagination.pageSize}
+         //paginationModel={paginationModel}
+         //onPaginationModelChange={setPaginationModel}
+         rowsPerPageOptions={[5, 10]}
+         checkboxSelection
+         onRowClick={handleClick}
+         loading={pagination.loading}
+         rowCount={pagination.totalRows}
+         onPageChange={(newPage) => setPagination(prev => ({ ...prev, page: newPage }))}
       />
       <Typography style={{ textAlign: "center", marginTop: 45 }}>Formulario</Typography>
       <Paper elevation={3} style={{ padding: 20 }}>

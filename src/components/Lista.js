@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 export default function Lista() {
 
   const [id, setId] = useState(1);
-  const [estado, setEstado] = useState(true);
+  const [estado, setEstado] = useState(false);
   const [name, setInputNombre] = useState("");
   const [code, setInputCode] = useState(null);
   const [open, setOpen] = useState(false);
@@ -37,8 +37,9 @@ export default function Lista() {
     setPaginationModel((previus) => ({ ...previus, loading: true }));
     fetch(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures?pageSize=${paginationModel.pageSize}&page=${paginationModel.page}`)
       .then(response => (response.json()))
-      .then(data => (setPaginationModel((previus) => ({ ...previus, datos: data, loading: false, totalRows:paginationModel.datos.totalRows}))));
+      .then(data => (setPaginationModel((previus) => ({ ...previus, datos: data, loading: false, totalRows: paginationModel.datos.totalRows }))));
   }, [id]);
+
 
   const cambiarEstado = () => {
     return setEstado(!estado);
@@ -60,36 +61,30 @@ export default function Lista() {
     }
   }
 
-  const handleActualizar = async (name, description) => {
+  const handleActualizar = async (values) => {
 
-    if (!name.trim() || !description.trim()) {
-      alert("agregar los campos");
-      return;
+    const newData = {
+      versionLock: null,
+      active: true,
+      createdAt: null,
+      modifiedAt: null,
+      modifiedBy: null,
+      id: parseInt(selectRow.id),
+      clientId: 1,
+      name: values.name,
+      description: values.description
     }
-    else {
-      const newData = {
-        versionLock: null,
-        active: true,
-        createdAt: null,
-        modifiedAt: null,
-        modifiedBy: null,
-        id: parseInt(selectRow.id),
-        clientId: 1,
-        name: name,
-        description: description
-      }
-      try {
-        await axios.put(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures/${selectRow.id}`, newData)
-          //const updateData= paginationModel.datos.map((dato)=>(dato.id===selectRow.id ? [...dato, name , description]: dato))
-          .then(response => setPaginationModel((previus) => ({ ...previus, datos: previus.datos.map((dato) => dato.id === selectRow.id ? { ...dato, ...response.data } : dato) })));
-        // setPaginationModel((previus)=>({...previus, datos:updateData}));
-
-      } catch (error) {
-        console.log("error de actualización");
-      }
+    try {
+      await axios.put(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures/${selectRow.id}`, newData)
+        //const updateData= paginationModel.datos.map((dato)=>(dato.id===selectRow.id ? [...dato, name , description]: dato))
+        .then(response => setPaginationModel((previus) => ({ ...previus, datos: previus.datos.map((dato) => dato.id === selectRow.id ? response.data : dato) })));
+      // setPaginationModel((previus)=>({...previus, datos:updateData}));
+      alert("DATOS ACTUALIZADOS");
+    } catch (error) {
+      console.log("error de actualización");
     }
-
   }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -121,6 +116,26 @@ export default function Lista() {
     (dat.id === parseInt(code) &&
       dat.name.toLowerCase().includes(name.toLowerCase())));
     setPaginationModel((previus) => ({ ...previus, datos: valorFiltrado }));
+  }
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://192.168.0.30:8080/snc-mf-api/v1/clients/${id}/procedures?pageSize=${paginationModel.pageSize}&page=${paginationModel.page}`, {
+        method: "GET",
+      });
+      if (!response.ok) {
+        throw new Error("bad connection")
+      }
+      const data = await response.json();
+      setPaginationModel((previus) => ({ ...previus, datos: data }));
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+  const CleanFilter = () => {
+    fetchData();
+    setInputNombre("");
+    setInputCode("");
   }
   const columns = [
     { field: 'id', headerName: 'ID', width: 150 },
@@ -165,73 +180,84 @@ export default function Lista() {
 
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          autoHeight
-          rows={rows}
-          loading={paginationModel.loading}
-          columns={columns}
-          pageSize={paginationModel.pageSize}
-          paginationMode="server"
-          paginationModel={paginationModel}
-          rowsPerPageOptions={[5, 10]}
-          rowCount={paginationModel.totalRows}
-          onPageChange={(newPage) => setPaginationModel((previus) => ({ ...previus, page: newPage }))}
+           autoHeight
+           rows={rows}
+           columns={columns}
+           pageSize={paginationModel.pageSize}
+           //paginationModel={paginationModel}
+           //onPaginationModelChange={setPaginationModel}
+           rowsPerPageOptions={[5, 10]}
+           checkboxSelection
+           loading={paginationModel.loading}
+           rowCount={paginationModel.totalRows}
+           onPageChange={(newPage) => setPaginationModel(prev => ({ ...prev, page: newPage }))}
         />
       </div>
-      <div style={{ visibility: estado === true ? "hidden" : "visible", marginTop: 20, display: "flex", justifyContent: "center", gap: 8 }}>
+      <div style={{ visibility: estado ? "hidden" : "visible", marginTop: 20, display: "flex", justifyContent: "center", gap: 8 }}>
         <TextField variant="outlined" margin="normal" label="Id" onChange={(e) => setInputCode(e.target.value)} value={code} />
         <TextField variant="outlined" margin="normal" label="Name" onChange={(e) => setInputNombre(e.target.value)} value={name} />
       </div>
-      <Box style={{ display: "grid", flexDirection: "row", gap: 10 }}>
-        <Button variant="outlined" onClick={cambiarEstado} color="primary" disableElevation>
-          Desaparecer
-        </Button>
-        <Button variant="outlined" onClick={buscarDatos} color="primary" disableElevation>
-          Filtrar
-        </Button>
-        <Button variant="outlined" onClick={() => (setId(id + 1))} color="primary" disableElevation>
-          Aumentar
-        </Button>
-        <Button variant="outlined" onClick={() => (setId(id - 1))} color="primary" disableElevation>
-          Disminuir
-        </Button>
-      </Box>
-      <Formik
-        initialValues={{
-          name: "",
-          description: "",
-        }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, { setSubmitting }) => {
+      <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
+        <Box style={{ display: "grid", flexDirection: "row", gap: 10 }}>
+          <Button variant="outlined" onClick={cambiarEstado} color="primary" disableElevation>
+            {estado ? "Ocultar Filtro" : "Mostrar Filtro"}
+          </Button>
+          <Button variant="outlined" onClick={buscarDatos} color="primary" disableElevation>
+            Filtrar
+          </Button>
+          <Button variant="outlined" onClick={CleanFilter} color="primary" disableElevation>
+            LIMPIAR FILTRO
+          </Button>
+          <Button variant="outlined" onClick={() => (setId(id + 1))} color="primary" disableElevation>
+            Aumentar
+          </Button>
+          <Button variant="outlined" onClick={() => (setId(id - 1))} color="primary" disableElevation>
+            Disminuir
+          </Button>
+        </Box>
 
-          handleCreate(values, { setSubmitting });
+        <Formik
+          initialValues={{
+            name: "",
+            description: "",
+          }}
+          validationSchema={SignupSchema}
+          onSubmit={(values, { setSubmitting }) => {
 
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <Box boxShadow={3} style={{ display: "flex", padding: 3, gap: 8, flexDirection: "column", alignItems: "center" }}>
-              <Field
-                as={TextField}
-                label="Name"
-                name="name"
-                helperText={<ErrorMessage name="code" />}
-              />
-              <Field
-                as={TextField}
-                label="Description"
-                name="description"
-                helperText={<ErrorMessage name="name" />}
-              />
+            handleCreate(values, { setSubmitting });
 
-              <Box display="flex" justifyContent="center" width="100%" marginTop={2}>
-                <Button type="submit" variant="contained" color="secondary" style={{ marginTop: 20, marginRight: 10 }} disabled={isSubmitting}>
-                  Create
-                </Button>
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <Box boxShadow={3} style={{ display: "flex", padding: 3, gap: 8, flexDirection: "column", alignItems: "center" }}>
+                <Field
+                  as={TextField}
+                  label="Name"
+                  name="name"
+                  variant="outlined"
+                  margin="normal"
+                  helperText={<ErrorMessage name="name" />}
+                />
+                <Field
+                  as={TextField}
+                  label="Description"
+                  name="description"
+                  variant="outlined"
+                  margin="normal"
+                  helperText={<ErrorMessage name="description" />}
+                />
+
+                <Box display="flex" justifyContent="center" width="100%" marginTop={2}>
+                  <Button type="submit" variant="contained" color="secondary" style={{ marginTop: 20, marginRight: 10 }} disabled={isSubmitting}>
+                    Create
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          </Form>
-        )}
-      </Formik>
+            </Form>
+          )}
+        </Formik>
+      </div>
       <SimpleDialog data={selectRow} open={open} onClose={handleClose} onUpdate={handleActualizar} />
     </>
   )

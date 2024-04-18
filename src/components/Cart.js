@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%', 
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -39,9 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Cart() {
+export default function Cart({id,title, description, price,images}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const firtLetterTitle = title ? title.charAt(0) : '';
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -52,7 +53,7 @@ export default function Cart() {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            R
+            {firtLetterTitle}
           </Avatar>
         }
         action={
@@ -60,12 +61,11 @@ export default function Cart() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+       title={title}
       />
       <CardMedia
         className={classes.media}
-        image="/static/images/cards/paella.jpg"
+        image={images[0]}
         title="Paella dish"
       />
       <CardActions disableSpacing>
