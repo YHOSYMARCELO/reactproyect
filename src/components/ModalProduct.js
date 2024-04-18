@@ -10,6 +10,7 @@ import { Button, Typography , TextField} from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import { createContext } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     expand: {
@@ -40,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
     }
 
 }))
+
+const ProductContext= createContext(null);
 
 export default function ModalProduct({producto, open, onClose }) {
     const classes = useStyles();
