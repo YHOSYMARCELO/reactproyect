@@ -9,6 +9,7 @@ import Stab from './components/Stab';
 import Tags from './components/Tags';
 import CartList from './components/CartList';
 import ShopPage from './components/ShopPage';
+import Procedimientos from './components/Procedimientos';
 
 function App() {
   return (
@@ -21,12 +22,21 @@ function App() {
           <Route path="tags/:id" element={<Tags/>}/>
           <Route path="*" element={<Lista />} />
        
+<<<<<<< HEAD
   </Routes>*/}
    
       <ShopPage>
         <CartList/>
       </ShopPage>
     </>
+=======
+  </Routes>
+  <ShopPage>
+    <Cart></Cart>
+  </ShopPage>*/}
+  <Procedimientos></Procedimientos>
+   </>
+>>>>>>> 4c25fcd0f586c705e6e8e2df32cb49e45c892cc4
   );
 }
 
