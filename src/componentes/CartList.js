@@ -34,10 +34,11 @@ export default function CartList(){
         <>
         {product.slice(0,12).map((producto)=>(
             <Cart key={producto.id}
-            {...producto}
-            onClick={handleProductClick}/>   
+            //{...producto}
+            producto={producto}
+            onHandleImage={handleProductClick}/>   
         ))}
-       <ModalProduct producto={selectedProduct} open={open} onClose={handleClose}/>
+       {selectedProduct && <ModalProduct producto={selectedProduct} open={open} onClose={handleClose}/>}
         </>
     )
 }

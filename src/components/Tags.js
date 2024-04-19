@@ -7,7 +7,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
-//import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -56,30 +55,6 @@ export default function Tags() {
     setOpen(false);
   }
 
-  /*useEffect(() => {
-    const fetchAPI = async () => {
-        const response = await fetch('http://127.0.0.1:5000/listProducts', {
-            method: 'GET',
-        }).catch((err) => ('Error', console.error(err)));
-        const data = await response.json();
-        setData(data);
-    };
-    fetchAPI();
-}, []);*/
-
-  /*try {
-    const response = await fetch('https://api.example.com/post', {
-      method: 'POST',
-      body: JSON.stringify({ key: 'value' }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const result = await response.json();
-    console.log(result);
-  } catch (error) {
-    console.error('Error:', error);
-  }*/
   const handleCreate = async (name, color) => {
     if (!name.trim() || !color.trim()) {
       alert("agregar valores");
@@ -105,10 +80,7 @@ export default function Tags() {
             'Content-Type': 'application/json',
           }
         });
-        /*if (!response.ok) {
-          throw new Error("no connection");
-        }
-        const data = await response.json();*/
+      
         setTag((previus) => ([...previus, newData]));
         alert("datos ingresados");
       }
@@ -117,9 +89,7 @@ export default function Tags() {
       }
 
     }
-
   }
-
   const handleUpdate = async (name, color) => {
     if (!color.trim() || !name.trim()) {
       alert("necesitas ingresar los campos");

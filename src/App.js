@@ -7,9 +7,9 @@ import Lista from './components/Lista';
 import DetailsMaterial from './components/DetailsMaterial';
 import Stab from './components/Stab';
 import Tags from './components/Tags';
-import CartList from './components/CartList';
-import ShopPage from './components/ShopPage';
-import Procedimientos from './components/Procedimientos';
+import CartList from './componentes/CartList';
+import ShopPage from './componentes/ShopPage';
+//import Procedimientos from './components/Procedimientos';
 
 function App() {
   return (
@@ -20,24 +20,12 @@ function App() {
           <Route path="material/details/:id" element={<DetailsMaterial/>}/>
           <Route path="materialtab/:id" element={<Stab/>}/>
           <Route path="tags/:id" element={<Tags/>}/>
-          <Route path="*" element={<Lista />} />
-       
-<<<<<<< HEAD
-  </Routes>*/}
-   
+          <Route path="*" element={<Lista />} />    
+  </Routes>*/} 
       <ShopPage>
         <CartList/>
       </ShopPage>
     </>
-=======
-  </Routes>
-  <ShopPage>
-    <Cart></Cart>
-  </ShopPage>*/}
-  <Procedimientos></Procedimientos>
-   </>
->>>>>>> 4c25fcd0f586c705e6e8e2df32cb49e45c892cc4
   );
 }
-
 export default App;

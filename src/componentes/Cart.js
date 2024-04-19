@@ -1,19 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', 
+    paddingTop: '56.25%',
   },
   expand: {
     transform: 'rotate(0deg)',
@@ -39,17 +33,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Cart({id,title, description, price,images}) {
+export default function Cart({ producto, onHandleImage}) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const firtLetterTitle = title ? title.charAt(0) : '';
+  const firtLetterTitle = producto.title ? producto.title.charAt(0) : '';
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
+  const handleClick=()=> {
+    onHandleImage(producto)
+  }
   return (
-    <Card className={classes.root}>
+    <Card onClick={handleClick}className={classes.root}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
@@ -61,29 +53,15 @@ export default function Cart({id,title, description, price,images}) {
             <MoreVertIcon />
           </IconButton>
         }
-       title={title}
+        title={producto.title}
       />
       <CardMedia
         className={classes.media}
-        image={images[0]}
-        title="Paella dish"
+        image={producto.images[2]}
       />
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
         </IconButton>
       </CardActions>
     </Card>

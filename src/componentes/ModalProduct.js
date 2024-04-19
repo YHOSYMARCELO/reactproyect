@@ -6,11 +6,12 @@ import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Button, Typography , TextField} from '@material-ui/core';
-import { useEffect, useState, useContext } from 'react';
+import { Button, Typography, TextField } from '@material-ui/core';
+import { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { CartContext } from './CartProvider'
+import CartProduct from './CartProduct';
+//import { CartContext } from '../context/CartContext'
 
 const useStyles = makeStyles((theme) => ({
     expand: {
@@ -27,39 +28,67 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
     },
 
+    paper: {
+        height: 600,
+        padding: 50
+    },
     container: {
-        display:'flex',
-        justifyContent:'center'
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 10,
     },
     box: {
-        display:'flex',
-        flexDirection:'column',
-        gap:3
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        width: '50%'
     },
-    textField:{
-        marginBottom:theme.spacing(1)
+    textField: {
+        marginBottom: theme.spacing(1)
+    },
+    image: {
+        width: 500,
+        height: 500
+    },
+    modal: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
     }
 
 }))
 
-
-export default function ModalProduct({producto, open, onClose }) {
+export default function ModalProduct({ producto, open, onClose }) {
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
-    const [quantity, setQuantity]= useState(1); 
-    const {addProduct} = useContext(CartContext)
+    const [quantity, setQuantity] = useState(1);
+    const [cart, setCart] = useState([]);
+    const [showCart,setShowCart]=useState(false); 
+    //const {addProduct} = useContext(CartContext)
 
-    useEffect(()=>{
-        setAddProduct({producto:producto, quantity:quantity})
-    },[producto]); 
-
+    /*useEffect(()=>{
+        setProduct({producto, quantity });
+    },[producto,quantity])*/
+    
+    const handleExpandClick = () => {
+        setExpanded(!expanded)
+    }
+    const addProduct = () => {
+        const newProduct= {...producto, quantity}; 
+        setCart([...cart,newProduct]); 
+        //setCart(newProduct);
+        alert("producto agregado")
+    }
+    const toggleCart=()=>{
+        setShowCart(!showCart); 
+    }
     const body = (
-        <Paper>
+        <Paper className={classes.paper}>
             <Container className={classes.container}>
-                <Box>
-                    <img src={producto.images[0]}/>
+                <Box >
+                    <img className={classes.image} src={producto.images} />
                 </Box>
-                <Box>
+                <Box className={classes.box}>
                     <Typography>{producto.title}</Typography>
                     <Typography>{producto.price}</Typography>
                     <IconButton
@@ -81,25 +110,21 @@ export default function ModalProduct({producto, open, onClose }) {
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                    />
+                    /> 
+                    <Button onClick={addProduct}>Add Cart</Button>
                     <Button className={classes.button}
-                        startIcon={<ShoppingCartIcon />} onClick={handleAddProduct}> Add Cart</Button>
+                        startIcon={<ShoppingCartIcon />} onClick={toggleCart}> {showCart ?"Show Cart":"Hide Cart"}</Button>
                 </Box>
             </Container>
+            {showCart && <CartProduct cart={cart} />}
         </Paper>
     )
     const handleClose = () => {
         onClose()
     };
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded)
-    }
-    const handleAddProduct=()=>{
-        addProduct(producto, quantity);
-    }
     return (
-        <Modal
+        <Modal className={classes.modal}
             open={open}
             onClose={handleClose}
             aria-labelledby="simple-modal-title"

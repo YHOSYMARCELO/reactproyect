@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,7 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
 import "../css/ShopPage.css"
 import AddIcon from '@material-ui/icons/Add';
-
+import CartProduct from './CartProduct';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -25,7 +25,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ShowPage({children}) {
   const classes = useStyles();
+  const [open,setOpen]=useState(false); 
 
+  const handleOpen=()=>{
+    setOpen(!open); 
+  }
   return (
     <>
     <div className={classes.root}>
@@ -37,7 +41,7 @@ export default function ShowPage({children}) {
           <Typography variant="h6" className={classes.title}>
             ShopFood
           </Typography>
-          <Button color="inherit" startIcon={<AddIcon/>}>Cart</Button>
+          <Button color="inherit" startIcon={<AddIcon/>} onClick={handleOpen}>Cart</Button>
         </Toolbar>
       </AppBar>
     </div>
@@ -46,6 +50,7 @@ export default function ShowPage({children}) {
         {children}
         </Box>
     </div>
+    {open && <CartProduct/>}
     </>
   );
 }
