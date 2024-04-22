@@ -31,10 +31,43 @@ export default function CartProduct({ cart, dataUnique }) {
         setTotal(sum)
     }, [dataCart])
 
-    useEffect(() => {
-        const UpdateData = dataCart.map((valor) => valor.id === dataUnique.id ? { ...valor, quantity:valor.quantity += dataUnique.quantity } : valor);
-        setDataCart(UpdateData)
-    }, [dataUnique])
+    /*useEffect(() => {
+        const updateDataCart=[...dataCart];
+        const updateData = updateDataCart.findIndex((indice)=>indice.id===dataUnique.id); 
+        if(updateData!==-1){
+            updateDataCart[updateData].quantity+=dataUnique.quantity; 
+        }
+        else{
+            updateDataCart.push(dataUnique)
+        }
+        setDataCart(updateDataCart)
+    }, [dataUnique])*/
+   /* useEffect(() => {
+       
+        const existingProductIndex = dataCart.findIndex(item => item.id === dataUnique.id);
+
+        if (existingProductIndex !== -1) {
+            const updatedDataCart = [...dataCart];
+            updatedDataCart[existingProductIndex].quantity += dataUnique.quantity;
+            setDataCart(updatedDataCart);
+        } else {
+           
+            setDataCart(prevCart => [...prevCart, dataUnique]);
+        }
+    }, [dataUnique]);*/
+    useEffect(()=>{
+        const productoD= dataCart.find((item)=>item.id===dataUnique.id);
+        if(productoD) {
+           const dataFilterd= dataCart.map(item=>item.id===dataUnique.id ?
+            {...item, quantity:item.quantity +=dataUnique.quantity}: item)   
+            setDataCart(dataFilterd)  
+        }else{
+            setDataCart(prevCart => [...prevCart, dataUnique]);
+        }
+        
+    },[dataUnique])
+
+
     const deleteProduct = (value) => {
         const dataDelete = dataCart.filter((producto) => producto.id !== value.id);
         setDataCart(dataDelete);
