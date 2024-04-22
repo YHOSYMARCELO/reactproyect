@@ -10,7 +10,7 @@ import { Button, Typography, TextField } from '@material-ui/core';
 import { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { CartContext } from '../context/CartContext';
+import CartProduct from './CartProduct';
 //import { CartContext } from '../context/CartContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +30,9 @@ const useStyles = makeStyles((theme) => ({
 
     paper: {
         height: 600,
-        padding: 50
+        padding: 50,
+        overflowY:'scroll',
+        width:800
     },
     container: {
         display: 'flex',
@@ -58,23 +60,28 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-export default function ModalProduct({ producto, open, onClose, setCart}) {
+export default function ModalProduct({ producto, open, onClose}) {
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [showCart, setShowCart] = useState(false);
+    const [cart, setCart] = useState([]); 
+    const [uniqueData,setUniqueData]= useState(null); 
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
     const addProduct = () => {
         const newProduct = { ...producto, quantity };
-        setCart(newProduct)
+        setCart([...cart,newProduct])
+        setUniqueData(newProduct)
+        //setCart(newProduct)
     }
     const toggleCart = () => {
         setShowCart(!showCart);
     }
     const body = (
         <Paper className={classes.paper}>
+            {showCart===false &&
             <Container className={classes.container}>
                 <Box >
                     <img className={classes.image} src={producto.images} />
@@ -103,11 +110,11 @@ export default function ModalProduct({ producto, open, onClose, setCart}) {
                         onChange={(e) => setQuantity(e.target.value)}
                     />
                     <Button onClick={addProduct}>Add Cart</Button>
-                    <Button className={classes.button}
-                        startIcon={<ShoppingCartIcon />} onClick={toggleCart}> {showCart ? "Show Cart" : "Hide Cart"}</Button>
                 </Box>
-            </Container>
-            {/*showCart && <CartProduct cart={cart} />*/}
+            </Container>}
+            <Button className={classes.button}
+                        startIcon={<ShoppingCartIcon />} onClick={toggleCart}> {showCart ? "Show Cart" : "Hide Cart"}</Button>
+            {showCart && <CartProduct cart={cart}  dataUnique={uniqueData}/>}
         </Paper>
     )
     const handleClose = () => {

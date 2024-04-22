@@ -30,9 +30,6 @@ function App() {
       <ShopPage>
         <CartList />
       </ShopPage>
-      <CartProvider>
-        <ParentComponent></ParentComponent>
-      </CartProvider>
     </>
   );
 }
