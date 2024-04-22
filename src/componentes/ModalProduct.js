@@ -7,10 +7,10 @@ import clsx from 'clsx';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button, Typography, TextField } from '@material-ui/core';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import CartProduct from './CartProduct';
+import { CartContext } from '../context/CartContext';
 //import { CartContext } from '../context/CartContext'
 
 const useStyles = makeStyles((theme) => ({
@@ -58,29 +58,20 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-export default function ModalProduct({ producto, open, onClose }) {
+export default function ModalProduct({ producto, open, onClose, setCart}) {
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [cart, setCart] = useState([]);
-    const [showCart,setShowCart]=useState(false); 
-    //const {addProduct} = useContext(CartContext)
-
-    /*useEffect(()=>{
-        setProduct({producto, quantity });
-    },[producto,quantity])*/
-    
+    const [showCart, setShowCart] = useState(false);
     const handleExpandClick = () => {
         setExpanded(!expanded)
     }
     const addProduct = () => {
-        const newProduct= {...producto, quantity}; 
-        setCart([...cart,newProduct]); 
-        //setCart(newProduct);
-        alert("producto agregado")
+        const newProduct = { ...producto, quantity };
+        setCart(newProduct)
     }
-    const toggleCart=()=>{
-        setShowCart(!showCart); 
+    const toggleCart = () => {
+        setShowCart(!showCart);
     }
     const body = (
         <Paper className={classes.paper}>
@@ -110,13 +101,13 @@ export default function ModalProduct({ producto, open, onClose }) {
                         type="number"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                    /> 
+                    />
                     <Button onClick={addProduct}>Add Cart</Button>
                     <Button className={classes.button}
-                        startIcon={<ShoppingCartIcon />} onClick={toggleCart}> {showCart ?"Show Cart":"Hide Cart"}</Button>
+                        startIcon={<ShoppingCartIcon />} onClick={toggleCart}> {showCart ? "Show Cart" : "Hide Cart"}</Button>
                 </Box>
             </Container>
-            {showCart && <CartProduct cart={cart} />}
+            {/*showCart && <CartProduct cart={cart} />*/}
         </Paper>
     )
     const handleClose = () => {

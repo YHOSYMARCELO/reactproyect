@@ -23,34 +23,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ShowPage({children}) {
+export default function ShowPage({ children }) {
   const classes = useStyles();
-  const [open,setOpen]=useState(false); 
+  const [open, setOpen] = useState(false);
 
-  const handleOpen=()=>{
-    setOpen(!open); 
+  const handleOpen = () => {
+    setOpen(!open);
   }
   return (
     <>
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            ShopFood
-          </Typography>
-          <Button color="inherit" startIcon={<AddIcon/>} onClick={handleOpen}>Cart</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-    <div className='container'>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              ShopFood
+            </Typography>
+            <Button color="inherit" startIcon={<AddIcon />} onClick={handleOpen}>Cart</Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+      <div className='container'>
         <Box className='box'>
-        {children}
+          {children}
         </Box>
-    </div>
-    {open && <CartProduct/>}
+      </div>
+      {open && <CartProduct />}
     </>
   );
 }
