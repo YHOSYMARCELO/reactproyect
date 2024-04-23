@@ -1,9 +1,10 @@
-import { Container, Typography, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, Table } from '@material-ui/core';
+import { Container, Typography, TableContainer,TextField, TableHead, TableCell, TableRow, TableBody, Paper, Table } from '@material-ui/core';
 //import { CartContext } from './CartProvider'
 import { useContext, useEffect, useState } from "react"
 import { makeStyles } from "@material-ui/core/styles";
 import { CartContext } from '../context/CartContext';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import UpdateIcon from '@material-ui/icons/Update';
 const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
@@ -16,6 +17,8 @@ export default function CartProduct({ cart, dataUnique }) {
     const classes = useStyles();
     const [total, setTotal] = useState(0);
     const [dataCart, setDataCart] = useState(cart);
+    const [valorCantidad, setValorCantidad]=useState(null)
+    const [disabled, setDisabled] = useState({}); 
     // const { cart } = useContext(CartContext);
     /*const [product, setProduct] = useState([]);
     useEffect(()=>{
@@ -31,7 +34,10 @@ export default function CartProduct({ cart, dataUnique }) {
         setTotal(sum)
     }, [dataCart])
 
-    /*useEffect(() => {
+    useEffect(()=>{
+        setValorCantidad(dataUnique.quantity || '')
+    },[dataUnique])
+   /* useEffect(() => {
         const updateDataCart=[...dataCart];
         const updateData = updateDataCart.findIndex((indice)=>indice.id===dataUnique.id); 
         if(updateData!==-1){
@@ -41,37 +47,46 @@ export default function CartProduct({ cart, dataUnique }) {
             updateDataCart.push(dataUnique)
         }
         setDataCart(updateDataCart)
-    }, [dataUnique])*/
-   /* useEffect(() => {
-       
-        const existingProductIndex = dataCart.findIndex(item => item.id === dataUnique.id);
-
-        if (existingProductIndex !== -1) {
-            const updatedDataCart = [...dataCart];
-            updatedDataCart[existingProductIndex].quantity += dataUnique.quantity;
-            setDataCart(updatedDataCart);
-        } else {
-           
-            setDataCart(prevCart => [...prevCart, dataUnique]);
-        }
-    }, [dataUnique]);*/
-    useEffect(()=>{
-        const productoD= dataCart.find((item)=>item.id===dataUnique.id);
-        if(productoD) {
-           const dataFilterd= dataCart.map(item=>item.id===dataUnique.id ?
-            {...item, quantity:item.quantity +=dataUnique.quantity}: item)   
-            setDataCart(dataFilterd)  
-        }else{
-            setDataCart(prevCart => [...prevCart, dataUnique]);
-        }
+    }, [dataUnique])
+    /* useEffect(() => {
         
-    },[dataUnique])
+         const existingProductIndex = dataCart.findIndex(item => item.id === dataUnique.id);
+ 
+         if (existingProductIndex !== -1) {
+             const updatedDataCart = [...dataCart];
+             updatedDataCart[existingProductIndex].quantity += dataUnique.quantity;
+             setDataCart(updatedDataCart);
+         } else {
+            
+             setDataCart(prevCart => [...prevCart, dataUnique]);
+         }
+     }, [dataUnique]);*/
+   /* useEffect(() => {
+        setValorCantidad(dataUnique.quantity)
+        const productoD = dataCart.find((item) => item.id === dataUnique.id);
+        if (productoD) {
+            const dataFilterd = dataCart.map(item => item.id === dataUnique.id ?
+                { ...item, quantity: item.quantity += dataUnique.quantity } : item)
+            setDataCart(dataFilterd)
+        } else {
+            setDataCart(prevCart => [...prevCart, dataUnique]);
+        }
 
+    }, [dataUnique])
 
+*/
     const deleteProduct = (value) => {
         const dataDelete = dataCart.filter((producto) => producto.id !== value.id);
         setDataCart(dataDelete);
     }
+    const updateProduct = (value) => {
+        const dataUpdate = dataCart.map((producto) => 
+            producto.id === value.id ? { ...producto, quantity: valorCantidad } : producto
+        );
+        setDataCart(dataUpdate);
+        setDisabled({ ...disabled, [value.id]: false }); 
+    }
+  
     return (
         <>
             <TableContainer component={Paper}>
@@ -84,6 +99,7 @@ export default function CartProduct({ cart, dataUnique }) {
                             <TableCell style={{ fontWeight: 'bold' }} align="center">Cantidad</TableCell>
                             <TableCell style={{ fontWeight: 'bold' }} align="center">Costo Total</TableCell>
                             <TableCell style={{ fontWeight: 'bold' }} align="center">Delete</TableCell>
+                            <TableCell style={{ fontWeight: 'bold' }} align="center">Update</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -94,9 +110,20 @@ export default function CartProduct({ cart, dataUnique }) {
                                 </TableCell>
                                 <TableCell align="center">{row.title}</TableCell>
                                 <TableCell align="center">{row.price}</TableCell>
-                                <TableCell align="center">{row.quantity}</TableCell>
+                                <TableCell align="center"> <TextField
+                                    className={classes.textField}
+                                    type="number"
+                                   // disabled={selectedRow !== row}
+                                    disabled={disabled[row.id]}
+                                    //value={selectedRow === row ? valorCantidad : row.quantity}
+                                    value={valorCantidad}
+                                    onChange={(e) => setValorCantidad(e.target.value)}
+                                /></TableCell>
                                 <TableCell align="center">{row.quantity * row.price}</TableCell>
-                                <TableCell ><HighlightOffIcon onClick={() => deleteProduct(row)} /></TableCell>
+                                <TableCell  align="center" ><HighlightOffIcon onClick={() => deleteProduct(row)} /></TableCell>
+                                <TableCell align="center">
+                                    <UpdateIcon onClick={() => updateProduct(row)} />
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

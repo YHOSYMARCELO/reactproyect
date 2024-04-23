@@ -14,6 +14,7 @@ import CartProduct from './componentes/CartProduct';
 import { useState } from 'react';
 import CartProvider from './context/CartContext';
 import ParentComponent from './componentes/ParentComponent';
+import Task  from './tasklist/Task';
 //import Procedimientos from './components/Procedimientos';
 
 function App() {
@@ -26,10 +27,11 @@ function App() {
           <Route path="materialtab/:id" element={<Stab/>}/>
           <Route path="tags/:id" element={<Tags/>}/>
           <Route path="*" element={<Lista />} />    
-  </Routes>*/}
+  </Routes>
       <ShopPage>
         <CartList />
-      </ShopPage>
+      </ShopPage>*/}
+      <Task/>
     </>
   );
 }
