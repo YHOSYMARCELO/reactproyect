@@ -2,26 +2,26 @@ import { Container, TableCell, TableRow, TableHead, TableBody, Paper, Table, Tab
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import UpdateIcon from '@material-ui/icons/Update';
 import { useState, useEffect } from "react";
-export default function ContainTask({ tasks, updateTask, newData }) {
+export default function ContainTask({ tasks, updateTask, newData,deleteTask }) {
     const [tasksGot, setTasksGot] = useState([]);
     console.log(newData.tarea)
     useEffect(() => {
         setTasksGot(tasks);
     }, [tasks])
-    const deleteTask = (index) => {
-        const eliminar = tasksGot.filter((_, i) => (i !== index));
-        setTasksGot(eliminar)
-    }
+  
     const handleUpdate = (index, row) => {
         updateTask(index, row);
     }
-    
+    const handleDeleteTask=(index)=>{
+        deleteTask(index)
+
+    }
    /* useEffect(()=>{
         setNewDat(newData); 
     },[newData])*/
     
     useEffect(() => {
-        const update = tasksGot.map((tarea, i) => (i === 1 ? newData.tarea : tarea));
+        const update = tasksGot.map((tarea, i) => (i === newData.index ? newData.tarea : tarea));
         setTasksGot(update)
     },[newData])
 
@@ -41,7 +41,7 @@ return (
                         {tasksGot.map((row, index) => (
                             <TableRow key={index}>
                                 <TableCell align="center">{row}</TableCell>
-                                <TableCell align="center" ><HighlightOffIcon onClick={() => deleteTask(index)} /></TableCell>
+                                <TableCell align="center" ><HighlightOffIcon onClick={() => handleDeleteTask(index)} /></TableCell>
                                 <TableCell align="center">
                                     <UpdateIcon onClick={() => handleUpdate(index, row)} />
                                 </TableCell>
