@@ -1,9 +1,9 @@
 
 import './App.css';
-import MaterialForm from './components/MaterialForm';
+import MaterialForm from './typescript/MaterialForm.tsx';
 //import DetailsMaterial from './components/DetailsMaterial';
 import { Routes, Route } from "react-router-dom";
-import Lista from './components/Lista';
+import Lista from './typescript/Lista.tsx';
 import DetailsMaterial from './components/DetailsMaterial';
 import Stab from './components/Stab';
 import Tags from './components/Tags';
@@ -31,7 +31,8 @@ function App() {
       <ShopPage>
         <CartList />
       </ShopPage>*/}
-      <Task/>
+      
+      <MaterialForm></MaterialForm>
     </>
   );
 }
