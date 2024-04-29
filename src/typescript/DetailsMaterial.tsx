@@ -20,7 +20,7 @@ interface FormData{
 const Details:React.FC<DetailsMaterialProp> =(props)=> {
 
   const { id } = useParams();
-  const [data, setDato] = useState<any[]>([]);
+  const [data, setDato] = useState<FormData>();
   const [edit, setEdit] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>( {
         id: null,
@@ -48,16 +48,17 @@ const Details:React.FC<DetailsMaterialProp> =(props)=> {
        setMaterial(material);
    },[])*/
    useEffect(() => {
-    // Actualiza formData cuando data cambie
+    if(data){
     setFormData({
-      id: data.id || "",
-      name: data.name || "",
-      code: data.code || "",
-      externalCode: data.externalCode || "",
+      id: data.id || null,
+      name: data.name || null,
+      code: data.code || null,
+      externalCode: data.externalCode || null,
       description: data.description || "",
       isVirtual: data.isVirtual || false,
       observations: data.observations || ""
     });
+  }
   }, [data]);
 
    const handleInputChange=(e)=>{
