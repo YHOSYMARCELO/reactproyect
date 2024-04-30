@@ -1,5 +1,5 @@
 import React from "react"
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -24,13 +24,13 @@ interface Props {
 
 }
 interface Transaction {
-    precio: number,
+    precio: number ,
     categoria: string,
-    fecha: string
+    fecha: Date | null
 }
 function createData(
     precio: number,
-    categoria: string, fecha: string) {
+    categoria: string, fecha: Date) {
     return { precio, categoria, fecha }
 }
 const currentDate = new Date();
@@ -44,15 +44,36 @@ const currentDate = new Date();
 
 const AppFinanzas: React.FC<Props> = () => {
     const [rows, setRows] = useState<Transaction[]>([
-        createData(6, "Electrodoméstico", currentDate.toISOString().slice(0, 10)),
-        createData(9, "Ropas", currentDate.toISOString().slice(0, 10)),
+        createData(6, "Electrodoméstico", currentDate),
+        createData(9, "Ropas", currentDate),
+        createData(6, "Electrodoméstico", currentDate),
+        createData(9, "Ropas", currentDate),
     ])
     const [transaction, setTransaction] = useState<Transaction>({
-        precio: 0,
+        precio:0,
         categoria: "",
-        fecha: "12-10-2023",
+        fecha:new Date(),
     })
+    const [searchFecha, setSearchFecha] = useState<Date |null >(null);
 
+    const [searchCategoria, setSearchCategoria]= useState<string>(); 
+
+    useEffect(() => {
+       
+        const uniqueCategories = [...new Set(rows.map(row => row.categoria))];
+       
+        const updatedData = uniqueCategories.map(category => {
+          
+            const filteredRows = rows.filter(row => row.categoria === category);
+         
+            const totalPrecio = filteredRows.reduce((total, row) => total + (row.precio || 0), 0);
+         
+            return { categoria: category, precio: totalPrecio };
+        });
+      
+        setRows(updatedData);
+    }, []);
+     
     const data = {
         labels: rows.map((row) => row.categoria),
         datasets: [
@@ -76,7 +97,7 @@ const AppFinanzas: React.FC<Props> = () => {
             }
         }
     };
-    const handleChange = (
+    /*const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         field: keyof Transaction
     ) => {
@@ -86,28 +107,44 @@ const AppFinanzas: React.FC<Props> = () => {
             [field]: field === "precio" ? parseFloat(value) : field === "fecha" ? new Date(value)  : value
         }));
     };
-
+*/
     const handleSave = () => {
         const transaccion: Transaction = {
             precio: transaction.precio,
             categoria: transaction.categoria,
             fecha: transaction.fecha
-
         }
         setRows([...rows, transaccion]);
-        setTransaction({ precio: 0, categoria: "", fecha: "" })
+        setTransaction({ precio: 0, categoria: "", fecha: new Date() })
     }
+
+    const handleSearch = (searchFecha, searchCategoria) => {
+        const filterData = rows.filter((row) => {
+            const filterCategoria = !searchCategoria || (row.categoria && row.categoria.includes(searchCategoria));
+            const filterFecha = !searchFecha || (row.fecha && row.fecha.toISOString().includes(searchFecha));
+            return filterCategoria && filterFecha;
+        });
+        const totalPrecio = filterData.reduce((total, row) => {
+            return total + (row.precio || 0); 
+        }, 0);
+        const rowsWithTotal = filterData.map(row => ({ ...row, precio:totalPrecio }));
+        setRows(rowsWithTotal);
+    };
+    
+    /*const handleInputCategoria=(event: React.ChangeEvent<{ value: string }>)=>{
+        setTransaction({...transaction, categoria:event.target.value})
+    }*/
 
     return (
         <>
             <Container component="main" style={{margin:'50px auto'}}>
                 <Paper>
-                    <form style={{ display: "flex", gap: 8 }}>
+                    <form style={{ display: "flex", gap: 8 }} onSubmit={(e)=>e.preventDefault}>
                         <TextField
                             label="Precio"
                             type="number"
                             value={transaction.precio}
-                            onChange={(e) => handleChange(e, "precio")}
+                            onChange={(e) =>setTransaction({...transaction, precio:parseFloat(e.target.value)})}
                             required
                         />
 
@@ -117,9 +154,9 @@ const AppFinanzas: React.FC<Props> = () => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={transaction.fecha}
-                            onChange={(e) => handleChange(e, "fecha")}
-                            required
+                            value={transaction.fecha ? transaction.fecha.toISOString().split('T')[0] : ''}
+                            onChange={(e) => setTransaction({...transaction, fecha:new Date(e.target.value)})}
+                            
                         />
 
                         <Select
@@ -127,7 +164,7 @@ const AppFinanzas: React.FC<Props> = () => {
                             id="demo-simple-select"
                             value={transaction.categoria}
                             label="Categoria"
-                            onChange={(e) => handleChange}
+                            onChange={(e:any)=>setTransaction({...transaction, categoria:e.target.value})}
                         >
                             <MenuItem value="Electrodoméstico">Electrodoméstico</MenuItem>
                             <MenuItem value="Ropa">Ropa</MenuItem>
@@ -136,7 +173,7 @@ const AppFinanzas: React.FC<Props> = () => {
                             <MenuItem value="Animal">Animal</MenuItem>
                         </Select>
 
-                        <Button variant="outlined" color="primary" type="submit" onClick={handleSave}>SAVE</Button>
+                        <Button variant="outlined" color="primary" onClick={handleSave}>SAVE</Button>
                     </form>
                 </Paper>
 
@@ -159,13 +196,37 @@ const AppFinanzas: React.FC<Props> = () => {
                                         {row.precio}
                                     </TableCell>
                                     <TableCell align="right">{row.categoria}</TableCell>
-                                    <TableCell align="right">{row.fecha}</TableCell>
+                                    <TableCell align="right">{row.fecha ? row.fecha.toISOString().split('T')[0] : ''}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-
+                <Paper>
+                        <TextField
+                            label="Fecha"
+                            type="date"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={searchFecha ? searchFecha.toISOString().split('T')[0] : ''}
+                            onChange={(e) => setSearchFecha(new Date (e.target.value))}   
+                        />
+                    <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={searchCategoria}
+                            onChange={(e:any)=> setSearchCategoria(e.target.value)}
+                            label="Categoria"
+                        >
+                            <MenuItem value="Electrodoméstico">Electrodoméstico</MenuItem>
+                            <MenuItem value="Ropa">Ropa</MenuItem>
+                            <MenuItem value="Comida">Comida</MenuItem>
+                            <MenuItem value="Limpieza">Limpieza</MenuItem>
+                            <MenuItem value="Animal">Animal</MenuItem>
+                        </Select>
+                        <Button variant="outlined" color="primary" onClick={()=>handleSearch(searchFecha, searchCategoria)}>BUSCAR</Button>
+                </Paper>
                 <Paper style={{marginTop:30}}>
                     <Bar data={data} options={chartOptions} />
                 </Paper>
