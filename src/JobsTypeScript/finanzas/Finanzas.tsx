@@ -87,7 +87,7 @@ const AppFinanzas: React.FC = () => {
                         id="demo-simple-select"
                         value={transaction.categoria}
                         label="Categoria"
-                        onChange={handleInputCategoria}
+                        onChange={(e)=>handleInputCategoria}
                     >
                         <MenuItem value="Electrodoméstico">Electrodoméstico</MenuItem>
                         <MenuItem value="Ropa">Ropa</MenuItem>

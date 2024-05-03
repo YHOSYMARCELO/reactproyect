@@ -16,6 +16,7 @@ import CartProvider from './context/CartContext';
 import ParentComponent from './componentes/ParentComponent';
 import Task  from './tasklist/Task';
 import AppFinanzas from './JobsTypeScript/finanzas/AppFinanzas.tsx';
+//import Prueba from './JobsTypeScript/finanzas/practicas/Prueba.tsx';
 //import Procedimientos from './components/Procedimientos';
 
 function App() {
